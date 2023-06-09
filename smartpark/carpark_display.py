@@ -10,7 +10,14 @@ import tkinter as tk
 from typing import Iterable
 import paho.mqtt.client as paho
 from paho.mqtt.client import MQTTMessage
+import tomllib
 
+with open("config.toml", "rb") as f:
+    config = tomllib.load(f)
+    location = (config["config"]["location"])
+    total_spaces = (config["config"]["total_spaces"])
+    BROKER = (config["config"]["broker_host"])
+    PORT = (config["config"]["broker_port"])
 # ------------------------------------------------------------------------------------#
 # You don't need to understand how to implement this class, just how to use it.       #
 # ------------------------------------------------------------------------------------#
@@ -80,7 +87,7 @@ class CarParkDisplay:
 
     def __init__(self):
         self.window = WindowedDisplay(
-            'Joondalup', CarParkDisplay.fields)
+            location, CarParkDisplay.fields)
         updater = threading.Thread(target=self.check_updates)
         updater.daemon = True
         updater.start()
@@ -91,8 +98,7 @@ class CarParkDisplay:
         # TODO: This is where you should manage the MQTT subscription
 
         while True:
-            BROKER, PORT = "localhost", 1883
-            #car_count = []
+            #BROKER, PORT = "localhost", 1883
             def on_message(client, userdata, msg):
                 #print(f'Received {msg.payload.decode()}')
                 decoded_message = str(msg.payload.decode())
@@ -110,7 +116,7 @@ class CarParkDisplay:
 
             client.connect(BROKER, PORT)
             client.subscribe("lot/sensor")
-            parking_spaces = 500 - sum(car_count)
+            parking_spaces = total_spaces - sum(car_count)
             print(parking_spaces)
             # NOTE: Dictionary keys *must* be the same as the class fields
             field_values = dict(zip(CarParkDisplay.fields, [

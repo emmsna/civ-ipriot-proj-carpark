@@ -6,14 +6,21 @@ Attend to the TODOs in each class to complete the implementation."""
 import tkinter as tk
 from typing import Iterable
 import paho.mqtt.client as paho
+import tomllib
 
+with open("config.toml", "rb") as f:
+    config = tomllib.load(f)
+    location = (config["config"]["location"])
+    total_spaces = (config["config"]["total_spaces"])
+    BROKER = (config["config"]["broker_host"])
+    PORT = (config["config"]["broker_port"])
 
 # ------------------------------------------------------------------------------------#
 # You don't need to understand how to implement this class, just how to use it.       #
 # ------------------------------------------------------------------------------------#
 # TODO: got to the main section of this script **first** and run the CarParkDisplay.  #
 
-BROKER, PORT = "localhost", 1883
+#BROKER, PORT = "localhost", 1883
 client = paho.Client()
 client.connect(BROKER, PORT)
 
