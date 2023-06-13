@@ -1,8 +1,17 @@
+"""
+Course:     ICT40120 Cert IV in IT (Programming)
+    Name:       Emma'Jane Kane
+    Id:         V244681
+    Unit:       IP4RIoT (Cluster)
+    Assessment: AT3 Project
+    Date:       June 2023
+    Purpose:    Carpark Project with MQTT, TOML config file, Unittest
+                A test created to check the config file works and outputs the expected data
+
+"""
 import unittest
 
-import tomli  # you can use toml, json,yaml, or ryo for your config file
-
-import smartpark.config_parser as pc
+import samples_and_snippets.config_parser as pc
 
 
 class TestConfigParsing(unittest.TestCase):

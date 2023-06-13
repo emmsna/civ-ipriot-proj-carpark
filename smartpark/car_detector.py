@@ -1,13 +1,22 @@
-"""The following code is used to provide an alternative to students who do not have a Raspberry Pi.
-If you have a Raspberry Pi, or a SenseHAT emulator under Debian, you do not need to use this code.
+"""
+Course:     ICT40120 Cert IV in IT (Programming)
+    Name:       Emma'Jane Kane
+    Id:         V244681
+    Unit:       IP4RIoT (Cluster)
+    Assessment: AT3 Project
+    Date:       June 2023
+    Purpose:    Carpark Project with MQTT, TOML config file, Unittest
+                This script is to emulate a sensor that registers when a car enters or exits a car park.
+                This is done by way of the tkinter GUI with buttons to click for a car to Enter and Exit.
+                Each action is Published to the MQTT server
 
-You need to split the classes here into two files, one for the CarParkDisplay and one for the CarDetector.
-Attend to the TODOs in each class to complete the implementation."""
+"""
 import tkinter as tk
 from typing import Iterable
 import paho.mqtt.client as paho
 import tomllib
 
+# open the config file and retrieve the required values
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
     location = (config["config"]["location"])
@@ -20,27 +29,16 @@ with open("config.toml", "rb") as f:
 # ------------------------------------------------------------------------------------#
 # TODO: got to the main section of this script **first** and run the CarParkDisplay.  #
 
-#BROKER, PORT = "localhost", 1883
+# Setup and connect to the MQTT Client
 client = paho.Client()
 client.connect(BROKER, PORT)
 
-class WindowedDisplay:
-    """Displays values for a given set of fields as a simple GUI window. Use .show() to display the window; use .update() to update the values displayed.
-    """
 
+class WindowedDisplay:
     DISPLAY_INIT = '– – –'
     SEP = ':'  # field name separator
 
     def __init__(self, title: str, display_fields: Iterable[str]):
-        """Creates a Windowed (tkinter) display to replace sense_hat display. To show the display (blocking) call .show() on the returned object.
-
-        Parameters
-        ----------
-        title : str
-            The title of the window (usually the name of your carpark from the config)
-        display_fields : Iterable
-            An iterable (usually a list) of field names for the UI. Updates to values must be presented in a dictionary with these values as keys.
-        """
         self.window = tk.Tk()
         self.window.title(f'{title}: Parking')
         self.window.geometry('800x400')
@@ -67,7 +65,6 @@ class WindowedDisplay:
         self.window.mainloop()
 
     def update(self, updated_values: dict):
-        """Update the values displayed in the GUI. Expects a dictionary with keys matching the field names passed to the constructor."""
         for field in self.gui_elements:
             if field.startswith('lbl_field'):
                 field_value = field.replace('field', 'value')
@@ -79,9 +76,8 @@ class WindowedDisplay:
 # TODO: STUDENT IMPLEMENTATION STARTS HERE #
 # -----------------------------------------#
 
-class CarDetector:
-    """Provides a couple of simple buttons that can be used to represent a sensor detecting a car. This is a skeleton only."""
 
+class CarDetector:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Car Detector ULTRA")
@@ -96,24 +92,17 @@ class CarDetector:
         self.root.mainloop()
 
     def incoming_car(self):
-        # TODO: implement this method to publish the detection via MQTT
-        #client.publish("lot/sensor", "CP-Car goes in")
+#         client.publish("lot/sensor", "CP-Car goes in")
+#         Above was used for debugging to show that Publishing and Subscribing were working
         client.publish("lot/sensor", 1)
-        print("Car goes in")
+        print("Car goes in")   # To show the function has run
 
     def outgoing_car(self):
-        # TODO: implement this method to publish the detection via MQTT
-        #client.publish("lot/sensor", "CP-Car goes out")
+#        client.publish("lot/sensor", "CP-Car goes out")
+#        Above was used for debugging to show that Publishing and Subscribing were working
         client.publish("lot/sensor", -1)
-        print("Car goes out")
-
-
-
-
-
+#        print("Car goes out") # To show the function has run
 
 
 if __name__ == '__main__':
-    # TODO: Run each of these classes in a separate terminal. You should see the CarParkDisplay update when you click the buttons in the CarDetector.
-
     CarDetector()
